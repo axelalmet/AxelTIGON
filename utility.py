@@ -191,7 +191,6 @@ def MultimodalGaussian_density(x,time_all,time_pt,data_train,sigma,device):
     mu_tensor = torch.tensor(mu, device=device, dtype=torch.float32)
     mvn = torch.distributions.MultivariateNormal
     for i in range(num_gaussian):
-        # m = torch.distributions.multivariate_normal.MultivariateNormal(mu[i,:], sigma_matrix)
         m = mvn(mu_tensor[i], sigma_matrix)
         p_unn = p_unn + torch.exp(m.log_prob(x)).type(torch.float32).to(device)
     p_n = p_unn/num_gaussian
@@ -218,26 +217,6 @@ def Sampling(num_samples, time_all, time_pt, data_train, sigma, device):
     samples = sampled_mu + noise_add
 
     return samples
-
-# def Sampling(num_samples,time_all,time_pt,data_train,sigma,device):
-    #perturb the  coordinate x with Gaussian noise N (0, sigma*I )
-    # mu = data_train[time_all[time_pt]]
-    # num_gaussian = mu.shape[0] # mu is number_sample * dimension
-    # dim = mu.shape[1]
-    # sigma_matrix = sigma * torch.eye(dim)
-    # m = torch.distributions.multivariate_normal.MultivariateNormal(torch.zeros(dim), sigma_matrix)
-    # noise_add = m.rsample(torch.Size([num_samples])).type(torch.float32).to(device)
-    # check if number of points is <num_samples
-    
-    # mu_tensor = torch.tensor(mu, device=noise_add.device, dtype=noise_add.dtype)
-    # sampled_mu = mu_tensor[random.sample(range(0, num_gaussian), num_samples)]
-
-    # if num_gaussian < num_samples:
-    #     samples = mu[random.choices(range(0,num_gaussian), k=num_samples)] + noise_add
-    # else:
-    #    samples = mu[random.sample(range(0,num_gaussian), num_samples)] + noise_add
-    # return samples
-
 
 def loaddata(args,device):
     data=np.load(os.path.join(args.input_dir,(args.dataset+'.npy')),allow_pickle=True)
